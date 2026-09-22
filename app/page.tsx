@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 
 const ASSESSORIA_PERCENTUAL = 7;
-const MARGEM_MINIMA = 20;
 
 const moeda = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -48,6 +47,7 @@ function Campo({
 
 export default function Home() {
   const [valorEstimado, setValorEstimado] = useState("100000");
+  const [lucroMinimo, setLucroMinimo] = useState("20");
   const [custoOperacional, setCustoOperacional] = useState("0");
   const [materiais, setMateriais] = useState("0");
   const [maoDeObra, setMaoDeObra] = useState("0");
@@ -57,6 +57,9 @@ export default function Home() {
   const [mesesContrato, setMesesContrato] = useState("12");
 
   const resultado = useMemo(() => {
+    const meses = Math.max(1, numero(mesesContrato));
+    const margemAlvo = numero(lucroMinimo);
+
     const custosFixos =
       numero(custoOperacional) +
       numero(materiais) +
@@ -64,15 +67,24 @@ export default function Home() {
       numero(impostos) +
       numero(outrosCustos);
 
-    const custoManutencao = numero(manutencaoMensal) * numero(mesesContrato);
+    const custoManutencao = numero(manutencaoMensal) * meses;
     const custoBase = custosFixos + custoManutencao;
 
-    const fatorDisponivel = 1 - ASSESSORIA_PERCENTUAL / 100 - MARGEM_MINIMA / 100;
-    const lanceMinimo = fatorDisponivel > 0 ? custoBase / fatorDisponivel : 0;
+    const fatorDisponivel =
+      1 - ASSESSORIA_PERCENTUAL / 100 - margemAlvo / 100;
+    const margemValida = fatorDisponivel > 0;
+    const lanceMinimo =
+      margemValida && custoBase > 0 ? custoBase / fatorDisponivel : 0;
 
     const assessoria = lanceMinimo * (ASSESSORIA_PERCENTUAL / 100);
     const lucro = lanceMinimo - assessoria - custoBase;
     const margem = lanceMinimo > 0 ? (lucro / lanceMinimo) * 100 : 0;
+
+    const receitaMensal = lanceMinimo / meses;
+    const custosMensaisBase = custoBase / meses;
+    const assessoriaMensal = assessoria / meses;
+    const despesasMensais = custosMensaisBase + assessoriaMensal;
+    const lucroMensal = lucro / meses;
 
     const estimado = numero(valorEstimado);
     const descontoPossivel = estimado > 0 ? estimado - lanceMinimo : 0;
@@ -80,6 +92,9 @@ export default function Home() {
       estimado > 0 ? (descontoPossivel / estimado) * 100 : 0;
 
     return {
+      meses,
+      margemAlvo,
+      margemValida,
       custosFixos,
       custoManutencao,
       custoBase,
@@ -87,12 +102,19 @@ export default function Home() {
       assessoria,
       lucro,
       margem,
+      receitaMensal,
+      custosMensaisBase,
+      assessoriaMensal,
+      despesasMensais,
+      lucroMensal,
       descontoPossivel,
       descontoPercentual,
-      abaixoDoEstimado: estimado === 0 || lanceMinimo <= estimado,
+      abaixoDoEstimado:
+        margemValida && (estimado === 0 || lanceMinimo <= estimado),
     };
   }, [
     valorEstimado,
+    lucroMinimo,
     custoOperacional,
     materiais,
     maoDeObra,
@@ -110,7 +132,7 @@ export default function Home() {
           <h1>Calculadora de Lance Mínimo</h1>
           <p>
             Descubra até onde a NNAK pode reduzir o valor de uma proposta sem
-            comprometer a margem mínima de lucro.
+            comprometer a margem desejada e veja o resultado mensal do contrato.
           </p>
         </div>
         <div className="rules">
@@ -119,8 +141,8 @@ export default function Home() {
             <strong>{ASSESSORIA_PERCENTUAL}%</strong>
           </div>
           <div>
-            <span>Lucro mínimo</span>
-            <strong>{MARGEM_MINIMA}%</strong>
+            <span>Lucro configurado</span>
+            <strong>{resultado.margemAlvo.toFixed(2)}%</strong>
           </div>
         </div>
       </section>
@@ -146,6 +168,14 @@ export default function Home() {
               value={mesesContrato}
               onChange={setMesesContrato}
               suffix="meses"
+              hint="Todos os valores mensais são calculados a partir deste prazo."
+            />
+            <Campo
+              label="Lucro mínimo desejado"
+              value={lucroMinimo}
+              onChange={setLucroMinimo}
+              suffix="%"
+              hint="Editável. Deve ser menor que 93%, pois 7% ficam reservados à assessoria."
             />
             <Campo
               label="Manutenção mensal"
@@ -192,22 +222,60 @@ export default function Home() {
         <aside className="resultPanel">
           <span className="eyebrow">Resultado</span>
           <p className="resultLabel">Lance mínimo recomendado</p>
-          <strong className="bigValue">{moeda.format(resultado.lanceMinimo)}</strong>
+          <strong className="bigValue">
+            {resultado.margemValida
+              ? moeda.format(resultado.lanceMinimo)
+              : "Margem inválida"}
+          </strong>
           <p className="resultHelp">
-            Abaixo deste valor, a margem líquida ficará inferior a 20%.
+            {resultado.margemValida
+              ? `Abaixo deste valor, a margem líquida ficará inferior a ${resultado.margemAlvo.toFixed(2)}%.`
+              : "A soma de assessoria e lucro precisa ser inferior a 100%."}
           </p>
 
           <div
-            className={resultado.abaixoDoEstimado ? "status ok" : "status danger"}
+            className={
+              resultado.margemValida
+                ? resultado.abaixoDoEstimado
+                  ? "status ok"
+                  : "status danger"
+                : "status danger"
+            }
           >
-            {resultado.abaixoDoEstimado
-              ? "O lance mínimo cabe no valor estimado."
-              : "Os custos exigem um lance acima do valor estimado."}
+            {!resultado.margemValida
+              ? "Reduza o lucro desejado para menos de 93%."
+              : resultado.abaixoDoEstimado
+                ? "O lance mínimo cabe no valor estimado."
+                : "Os custos exigem um lance acima do valor estimado."}
+          </div>
+
+          <div className="monthlyTitle">
+            <span className="eyebrow">Visão mensal</span>
+            <small>{resultado.meses} mês(es) de contrato</small>
+          </div>
+
+          <div className="monthlyGrid">
+            <div className="monthlyCard">
+              <span>Receita média/mês</span>
+              <strong>{moeda.format(resultado.receitaMensal)}</strong>
+            </div>
+            <div className="monthlyCard">
+              <span>Despesas médias/mês</span>
+              <strong>{moeda.format(resultado.despesasMensais)}</strong>
+            </div>
+            <div className="monthlyCard">
+              <span>Lucro médio/mês</span>
+              <strong>{moeda.format(resultado.lucroMensal)}</strong>
+            </div>
+            <div className="monthlyCard">
+              <span>Assessoria rateada/mês</span>
+              <strong>{moeda.format(resultado.assessoriaMensal)}</strong>
+            </div>
           </div>
 
           <div className="metrics">
             <div>
-              <span>Custos totais</span>
+              <span>Custos totais da execução</span>
               <strong>{moeda.format(resultado.custoBase)}</strong>
             </div>
             <div>
@@ -215,26 +283,34 @@ export default function Home() {
               <strong>{moeda.format(resultado.assessoria)}</strong>
             </div>
             <div>
-              <span>Lucro líquido mínimo</span>
+              <span>Despesas totais + assessoria</span>
+              <strong>
+                {moeda.format(resultado.custoBase + resultado.assessoria)}
+              </strong>
+            </div>
+            <div>
+              <span>Lucro líquido total</span>
               <strong>{moeda.format(resultado.lucro)}</strong>
             </div>
             <div>
-              <span>Margem líquida</span>
+              <span>Margem líquida efetiva</span>
               <strong>{resultado.margem.toFixed(2)}%</strong>
             </div>
             <div>
-              <span>Manutenção no contrato</span>
+              <span>Manutenção total do contrato</span>
               <strong>{moeda.format(resultado.custoManutencao)}</strong>
             </div>
           </div>
 
-          {numero(valorEstimado) > 0 ? (
+          {numero(valorEstimado) > 0 && resultado.margemValida ? (
             <div className="limitBox">
               <span>Possível redução sobre o valor estimado</span>
-              <strong>{moeda.format(Math.max(0, resultado.descontoPossivel))}</strong>
+              <strong>
+                {moeda.format(Math.max(0, resultado.descontoPossivel))}
+              </strong>
               <small>
-                {Math.max(0, resultado.descontoPercentual).toFixed(2)}% de margem
-                para disputa até atingir o limite mínimo.
+                {Math.max(0, resultado.descontoPercentual).toFixed(2)}% de
+                margem para disputa até atingir o limite mínimo.
               </small>
             </div>
           ) : null}
@@ -242,7 +318,7 @@ export default function Home() {
           <div className="formula">
             <span>Fórmula usada</span>
             <code>
-              custos ÷ (1 − 7% − 20%)
+              custos ÷ (1 − 7% − {resultado.margemAlvo.toFixed(2)}%)
             </code>
           </div>
         </aside>

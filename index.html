@@ -15,7 +15,7 @@
     .head{display:flex;align-items:center;gap:10px;margin-bottom:22px}.head.compact{margin-top:28px}.head h2{margin:0;font-size:18px}.step{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:#fff;color:#090b10;font-size:11px;font-weight:900}
     .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.field span{display:block;margin-bottom:8px;font-size:13px;font-weight:700}.field small{display:block;margin-top:7px;color:var(--muted);line-height:1.4}.input{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;background:#0b0e14;padding-right:14px}.input:focus-within{border-color:#596273}.input input{width:100%;border:0;outline:0;color:var(--text);background:transparent;padding:14px;font:inherit}.input strong{color:var(--muted);font-size:12px;white-space:nowrap}.divider{height:1px;margin:28px 0 0;background:var(--line)}
     .label{margin:18px 0 5px;color:var(--muted);font-size:14px}.big{display:block;font-size:clamp(36px,4.4vw,56px);letter-spacing:-.05em;line-height:1}.help{margin:10px 0 18px;color:var(--muted);font-size:13px;line-height:1.5}.status{margin-bottom:22px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:800}.ok{border:1px solid rgba(50,213,131,.28);background:rgba(50,213,131,.08);color:var(--ok)}.bad{border:1px solid rgba(249,112,102,.28);background:rgba(249,112,102,.08);color:var(--bad)}
-    .monthly-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 12px}.monthly-title small{color:var(--muted);font-size:11px}.monthly-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:22px}.monthly-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.monthly-card span{margin-bottom:7px}.monthly-card strong{font-size:16px}
+    .monthly-result{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}.monthly-result.positive{border-color:rgba(50,213,131,.32);background:rgba(50,213,131,.08)}.monthly-result.negative{border-color:rgba(249,112,102,.32);background:rgba(249,112,102,.08)}.monthly-result-label{display:block;margin-bottom:5px;color:var(--muted);font-size:12px}.monthly-result strong{display:block;margin-bottom:5px;font-size:28px}.monthly-result small{color:var(--muted);font-size:11px}.monthly-badge{flex:0 0 auto;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:900}.monthly-result.positive .monthly-badge{background:rgba(50,213,131,.14);color:var(--ok)}.monthly-result.negative .monthly-badge{background:rgba(249,112,102,.14);color:var(--bad)}.monthly-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 12px}.monthly-title small{color:var(--muted);font-size:11px}.monthly-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:22px}.monthly-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.monthly-card span{margin-bottom:7px}.monthly-card strong{font-size:16px}
     .metrics{display:grid;border-top:1px solid var(--line)}.metrics div{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid var(--line)}.metrics span{margin:0}.metrics strong{font-size:14px;text-align:right}.limit,.formula{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.limit strong{display:block;margin-bottom:3px;font-size:23px}.limit small{color:var(--muted);line-height:1.5}.formula code{color:#d7dce5;font-size:13px}
     @media(max-width:960px){main{width:min(100% - 24px,760px);padding-top:28px}.hero{align-items:stretch;flex-direction:column}.rules{width:100%}.rules div{flex:1}.grid{grid-template-columns:1fr}.result{position:static}}
     @media(max-width:620px){main{width:min(100% - 18px,560px)}.panel,.result{padding:20px;border-radius:18px}.form,.monthly-grid{grid-template-columns:1fr}.rules{flex-direction:column}}
@@ -80,6 +80,15 @@
       <p class="help" id="ajudaResultado"></p>
       <div id="status" class="status ok"></div>
 
+      <div id="monthlyResult" class="monthly-result positive">
+        <div>
+          <span class="monthly-result-label">Resultado líquido do mês</span>
+          <strong id="saldoMensal">R$ 0,00</strong>
+          <small>Lance mensal − custos mensais − assessoria mensal</small>
+        </div>
+        <span id="monthlyBadge" class="monthly-badge">POSITIVO</span>
+      </div>
+
       <div class="monthly-title">
         <span class="eyebrow">Visão mensal</span>
         <small id="mesesResumo">12 mês(es) de contrato</small>
@@ -89,7 +98,7 @@
         <div class="monthly-card"><span>Valor estimado/mês</span><strong id="estimadoMensal">R$ 0,00</strong></div>
         <div class="monthly-card"><span>Lance mínimo/mês</span><strong id="lanceMensal">R$ 0,00</strong></div>
         <div class="monthly-card"><span>Despesas médias/mês</span><strong id="despesasMensais">R$ 0,00</strong></div>
-        <div class="monthly-card"><span>Lucro desejado/mês</span><strong id="lucroMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Lucro líquido/mês</span><strong id="lucroMensal">R$ 0,00</strong></div>
         <div class="monthly-card"><span>Assessoria/mês</span><strong id="assessoriaMensal">R$ 0,00</strong></div>
         <div class="monthly-card"><span>Execução/mês</span><strong id="execucaoMensal">R$ 0,00</strong></div>
       </div>
@@ -100,6 +109,7 @@
         <div><span id="lucroLabel">Lucro desejado</span><strong id="lucroTotal">R$ 0,00</strong></div>
         <div><span>Custos totais da execução</span><strong id="custosTotal">R$ 0,00</strong></div>
         <div><span>Manutenção total do contrato</span><strong id="manutencaoTotal">R$ 0,00</strong></div>
+        <div><span>Lucro/prejuízo total do contrato</span><strong id="saldoTotalContrato">R$ 0,00</strong></div>
         <div><span>Margem efetiva sobre o lance mínimo</span><strong id="margemEfetiva">0,00%</strong></div>
       </div>
 
@@ -158,6 +168,8 @@ function calc(){
   const assessoriaMensal=assessoriaTotal/meses;
   const lucroMensal=lucroDesejadoTotal/meses;
   const despesasMensais=(custosExecucao+assessoriaTotal)/meses;
+  const saldoMensal=lanceMensal-despesasMensais;
+  const saldoTotalContrato=lanceMinimo-custosExecucao-assessoriaTotal;
 
   document.getElementById("lucroTopo").textContent=pct(lucroPercentual);
   document.getElementById("lanceMinimo").textContent=brl.format(lanceMinimo);
@@ -168,7 +180,13 @@ function calc(){
   document.getElementById("estimadoMensal").textContent=brl.format(estimadoMensal);
   document.getElementById("lanceMensal").textContent=brl.format(lanceMensal);
   document.getElementById("despesasMensais").textContent=brl.format(despesasMensais);
-  document.getElementById("lucroMensal").textContent=brl.format(lucroMensal);
+  document.getElementById("lucroMensal").textContent=brl.format(saldoMensal);
+  document.getElementById("saldoMensal").textContent=brl.format(saldoMensal);
+  const mensal=document.getElementById("monthlyResult");
+  const badge=document.getElementById("monthlyBadge");
+  const positivo=saldoMensal>=0;
+  mensal.className="monthly-result "+(positivo?"positive":"negative");
+  badge.textContent=positivo?"POSITIVO":"NEGATIVO";
   document.getElementById("assessoriaMensal").textContent=brl.format(assessoriaMensal);
   document.getElementById("execucaoMensal").textContent=brl.format(execucaoMensal);
 
@@ -178,6 +196,7 @@ function calc(){
   document.getElementById("lucroTotal").textContent=brl.format(lucroDesejadoTotal);
   document.getElementById("custosTotal").textContent=brl.format(custosExecucao);
   document.getElementById("manutencaoTotal").textContent=brl.format(manutencaoTotal);
+  document.getElementById("saldoTotalContrato").textContent=brl.format(saldoTotalContrato);
   document.getElementById("margemEfetiva").textContent=pct(margemEfetiva);
 
   const s=document.getElementById("status");

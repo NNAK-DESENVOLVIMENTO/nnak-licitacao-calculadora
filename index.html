@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NNAK | Calculadora de Licitações</title>
+  <meta name="description" content="Calculadora para definição do lance mínimo em licitações." />
+  <style>
+    *{box-sizing:border-box} :root{--bg:#090b10;--panel:#11151d;--panel2:#171c26;--line:#252b36;--text:#f7f8fb;--muted:#9da6b5;--ok:#32d583;--bad:#f97066}
+    body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(255,255,255,.08),transparent 26rem),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    main{width:min(1400px,calc(100% - 40px));margin:0 auto;padding:56px 0 80px}.hero{display:flex;justify-content:space-between;gap:32px;align-items:flex-end;padding-bottom:32px}.eyebrow{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    h1{margin:10px 0 8px;font-size:clamp(36px,5vw,64px);letter-spacing:-.055em;line-height:.98}.hero p{max-width:680px;margin:0;color:var(--muted);font-size:17px;line-height:1.6}
+    .rules{display:flex;gap:10px}.rules div{min-width:150px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(17,21,29,.8)}.rules span,.metrics span,.limit span,.formula span{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}.rules strong{font-size:28px}
+    .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(360px,.85fr);gap:18px;align-items:start}.panel,.result{border:1px solid var(--line);border-radius:24px;background:rgba(17,21,29,.92);box-shadow:0 24px 80px rgba(0,0,0,.22)}.panel{padding:28px}.result{position:sticky;top:24px;padding:28px}
+    .head{display:flex;align-items:center;gap:10px;margin-bottom:22px}.head.compact{margin-top:28px}.head h2{margin:0;font-size:18px}.step{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:#fff;color:#090b10;font-size:11px;font-weight:900}
+    .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.field span{display:block;margin-bottom:8px;font-size:13px;font-weight:700}.field small{display:block;margin-top:7px;color:var(--muted);line-height:1.4}.input{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;background:#0b0e14;padding-right:14px}.input:focus-within{border-color:#596273}.input input{width:100%;border:0;outline:0;color:var(--text);background:transparent;padding:14px;font:inherit}.input strong{color:var(--muted);font-size:12px;white-space:nowrap}.divider{height:1px;margin:28px 0 0;background:var(--line)}
+    .label{margin:18px 0 5px;color:var(--muted);font-size:14px}.big{display:block;font-size:clamp(36px,4.4vw,56px);letter-spacing:-.05em;line-height:1}.help{margin:10px 0 18px;color:var(--muted);font-size:13px;line-height:1.5}.status{margin-bottom:22px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:800}.ok{border:1px solid rgba(50,213,131,.28);background:rgba(50,213,131,.08);color:var(--ok)}.bad{border:1px solid rgba(249,112,102,.28);background:rgba(249,112,102,.08);color:var(--bad)}
+    .metrics{display:grid;border-top:1px solid var(--line)}.metrics div{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid var(--line)}.metrics span{margin:0}.metrics strong{font-size:14px;text-align:right}.limit,.formula{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.limit strong{display:block;margin-bottom:3px;font-size:23px}.limit small{color:var(--muted);line-height:1.5}.formula code{color:#d7dce5;font-size:13px}
+    @media(max-width:960px){main{width:min(100% - 24px,760px);padding-top:28px}.hero{align-items:stretch;flex-direction:column}.rules{width:100%}.rules div{flex:1}.grid{grid-template-columns:1fr}.result{position:static}}
+    @media(max-width:620px){main{width:min(100% - 18px,560px)}.panel,.result{padding:20px;border-radius:18px}.form{grid-template-columns:1fr}.rules{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div><span class="eyebrow">NNAK · Licitações</span><h1>Calculadora de Lance Mínimo</h1><p>Descubra até onde a NNAK pode reduzir o valor de uma proposta sem comprometer a margem mínima de lucro.</p></div>
+    <div class="rules"><div><span>Assessoria fixa</span><strong>7%</strong></div><div><span>Lucro mínimo</span><strong>20%</strong></div></div>
+  </section>
+  <section class="grid">
+    <div class="panel">
+      <div class="head"><span class="step">01</span><h2>Dados da licitação</h2></div>
+      <div class="form">
+        <label class="field"><span>Valor estimado da licitação</span><div class="input"><input id="valorEstimado" inputmode="decimal" value="100000" /></div><small>Valor de referência ou teto informado no edital.</small></label>
+        <label class="field"><span>Duração do contrato</span><div class="input"><input id="mesesContrato" inputmode="decimal" value="12" /><strong>meses</strong></div></label>
+        <label class="field"><span>Manutenção mensal</span><div class="input"><input id="manutencaoMensal" inputmode="decimal" value="800" /></div><small>Editável. O valor inicial considerado é R$ 800/mês.</small></label>
+      </div>
+      <div class="divider"></div>
+      <div class="head compact"><span class="step">02</span><h2>Custos da execução</h2></div>
+      <div class="form">
+        <label class="field"><span>Custo operacional</span><div class="input"><input id="custoOperacional" inputmode="decimal" value="0" /></div></label>
+        <label class="field"><span>Materiais / fornecedores</span><div class="input"><input id="materiais" inputmode="decimal" value="0" /></div></label>
+        <label class="field"><span>Mão de obra</span><div class="input"><input id="maoDeObra" inputmode="decimal" value="0" /></div></label>
+        <label class="field"><span>Impostos</span><div class="input"><input id="impostos" inputmode="decimal" value="0" /></div></label>
+        <label class="field"><span>Outros custos</span><div class="input"><input id="outrosCustos" inputmode="decimal" value="0" /></div></label>
+      </div>
+    </div>
+    <aside class="result">
+      <span class="eyebrow">Resultado</span>
+      <p class="label">Lance mínimo recomendado</p>
+      <strong class="big" id="lanceMinimo">R$ 0,00</strong>
+      <p class="help">Abaixo deste valor, a margem líquida ficará inferior a 20%.</p>
+      <div id="status" class="status ok">O lance mínimo cabe no valor estimado.</div>
+      <div class="metrics">
+        <div><span>Custos totais</span><strong id="custosTotais">R$ 0,00</strong></div>
+        <div><span>Assessoria jurídica (7%)</span><strong id="assessoria">R$ 0,00</strong></div>
+        <div><span>Lucro líquido mínimo</span><strong id="lucro">R$ 0,00</strong></div>
+        <div><span>Margem líquida</span><strong id="margem">20,00%</strong></div>
+        <div><span>Manutenção no contrato</span><strong id="manutencaoTotal">R$ 0,00</strong></div>
+      </div>
+      <div class="limit"><span>Possível redução sobre o valor estimado</span><strong id="reducao">R$ 0,00</strong><small id="reducaoPct">0,00% de margem para disputa até atingir o limite mínimo.</small></div>
+      <div class="formula"><span>Fórmula usada</span><code>custos ÷ (1 − 7% − 20%)</code></div>
+    </aside>
+  </section>
+</main>
+<script>
+const ids=["valorEstimado","mesesContrato","manutencaoMensal","custoOperacional","materiais","maoDeObra","impostos","outrosCustos"];
+const brl=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
+const num=v=>{const n=Number(String(v).replace(/\./g,"").replace(",", "."));return Number.isFinite(n)?n:0};
+function calc(){
+  const v=id=>num(document.getElementById(id).value);
+  const custosFixos=v("custoOperacional")+v("materiais")+v("maoDeObra")+v("impostos")+v("outrosCustos");
+  const manut=v("manutencaoMensal")*v("mesesContrato");
+  const custos=custosFixos+manut;
+  const lance=custos/0.73;
+  const assess=lance*0.07;
+  const lucro=lance-assess-custos;
+  const margem=lance>0?(lucro/lance)*100:0;
+  const estimado=v("valorEstimado");
+  const diff=estimado-lance;
+  const pct=estimado>0?(diff/estimado)*100:0;
+  document.getElementById("lanceMinimo").textContent=brl.format(lance);
+  document.getElementById("custosTotais").textContent=brl.format(custos);
+  document.getElementById("assessoria").textContent=brl.format(assess);
+  document.getElementById("lucro").textContent=brl.format(lucro);
+  document.getElementById("margem").textContent=margem.toFixed(2).replace(".",",")+"%";
+  document.getElementById("manutencaoTotal").textContent=brl.format(manut);
+  document.getElementById("reducao").textContent=brl.format(Math.max(0,diff));
+  document.getElementById("reducaoPct").textContent=Math.max(0,pct).toFixed(2).replace(".",",")+"% de margem para disputa até atingir o limite mínimo.";
+  const s=document.getElementById("status");
+  const ok=estimado===0||lance<=estimado;
+  s.className="status "+(ok?"ok":"bad");
+  s.textContent=ok?"O lance mínimo cabe no valor estimado.":"Os custos exigem um lance acima do valor estimado.";
+}
+ids.forEach(id=>document.getElementById(id).addEventListener("input",calc)); calc();
+</script>
+</body>
+</html>

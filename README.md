@@ -24,6 +24,14 @@ Ou:
 lance mínimo = custos totais / 0,73
 ```
 
+## GitHub Pages
+
+Publicação configurada por GitHub Actions.
+
+Endereço esperado:
+
+`https://nnak-desenvolvimento.github.io/nnak-licitacao-calculadora/`
+
 ## Rodando localmente
 
 ```bash

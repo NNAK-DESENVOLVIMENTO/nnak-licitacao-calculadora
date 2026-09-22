@@ -1,37 +1,31 @@
 # NNAK Calculadora de Licitações
 
-Aplicação interna da NNAK para calcular o menor lance possível preservando os custos, a assessoria jurídica e o lucro desejado.
+Simulador para analisar um possível lance final de licitação e verificar se o contrato fica lucrativo.
 
-## Regra correta de cálculo
+## Regra de negócio
 
-O **valor estimado da licitação é sempre a base dos percentuais**.
+Existem dois valores diferentes:
 
-- Assessoria jurídica: **7% do valor estimado da licitação**
-- Lucro desejado: percentual editável calculado **sobre o valor estimado da licitação**
-- Manutenção: valor mensal × quantidade de meses do contrato
-- Demais custos: valores totais do contrato
+- **Valor estimado da licitação**: referência/teto informado no edital.
+- **Valor mínimo / lance final**: valor que a NNAK pretende efetivamente ofertar.
 
-### Lance mínimo
+O **lance final é a base dos cálculos financeiros**.
 
 ```
-assessoria = valor estimado × 7%
-lucro desejado = valor estimado × percentual de lucro
-custos de execução = custos totais + (manutenção mensal × meses)
+assessoria = lance final × 7%
+manutenção total = manutenção mensal × meses
+custos de execução = custos informados + manutenção total
+despesas totais = custos de execução + assessoria
 
-lance mínimo = custos de execução + assessoria + lucro desejado
+lucro líquido total = lance final - despesas totais
+margem líquida real = lucro líquido total / lance final
+
+receita mensal = lance final / meses
+despesas mensais = despesas totais / meses
+lucro/prejuízo mensal = lucro líquido total / meses
 ```
 
-### Visão mensal
-
-Depois de calcular os valores totais, o sistema distribui tudo pela duração do contrato:
-
-```
-valor estimado mensal = valor estimado / meses
-lance mínimo mensal = lance mínimo / meses
-assessoria mensal = assessoria / meses
-lucro mensal = lucro desejado / meses
-despesas mensais = (custos de execução + assessoria) / meses
-```
+O lucro mínimo desejado é uma meta de margem sobre o lance. O sistema compara a margem líquida real com essa meta e informa se ela foi atingida.
 
 ## GitHub Pages
 

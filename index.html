@@ -9,9 +9,9 @@
     *{box-sizing:border-box}:root{--bg:#090b10;--panel:#11151d;--panel2:#171c26;--line:#252b36;--text:#f7f8fb;--muted:#9da6b5;--ok:#32d583;--bad:#f97066}
     body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(255,255,255,.08),transparent 26rem),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
     main{width:min(1400px,calc(100% - 40px));margin:0 auto;padding:56px 0 80px}.hero{display:flex;justify-content:space-between;gap:32px;align-items:flex-end;padding-bottom:32px}.eyebrow{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
-    h1{margin:10px 0 8px;font-size:clamp(36px,5vw,64px);letter-spacing:-.055em;line-height:.98}.hero p{max-width:680px;margin:0;color:var(--muted);font-size:17px;line-height:1.6}
-    .rules{display:flex;gap:10px}.rules div{min-width:150px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(17,21,29,.8)}.rules span,.metrics span,.limit span,.formula span,.monthly-card span{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}.rules strong{font-size:28px}
-    .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(360px,.85fr);gap:18px;align-items:start}.panel,.result{border:1px solid var(--line);border-radius:24px;background:rgba(17,21,29,.92);box-shadow:0 24px 80px rgba(0,0,0,.22)}.panel{padding:28px}.result{position:sticky;top:24px;padding:28px}
+    h1{margin:10px 0 8px;font-size:clamp(36px,5vw,64px);letter-spacing:-.055em;line-height:.98}.hero p{max-width:760px;margin:0;color:var(--muted);font-size:17px;line-height:1.6}
+    .rules{display:flex;gap:10px}.rules div{min-width:170px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(17,21,29,.8)}.rules span,.metrics span,.limit span,.formula span,.monthly-card span{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}.rules strong{font-size:28px}
+    .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(380px,.85fr);gap:18px;align-items:start}.panel,.result{border:1px solid var(--line);border-radius:24px;background:rgba(17,21,29,.92);box-shadow:0 24px 80px rgba(0,0,0,.22)}.panel{padding:28px}.result{position:sticky;top:24px;padding:28px}
     .head{display:flex;align-items:center;gap:10px;margin-bottom:22px}.head.compact{margin-top:28px}.head h2{margin:0;font-size:18px}.step{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:#fff;color:#090b10;font-size:11px;font-weight:900}
     .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.field span{display:block;margin-bottom:8px;font-size:13px;font-weight:700}.field small{display:block;margin-top:7px;color:var(--muted);line-height:1.4}.input{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;background:#0b0e14;padding-right:14px}.input:focus-within{border-color:#596273}.input input{width:100%;border:0;outline:0;color:var(--text);background:transparent;padding:14px;font:inherit}.input strong{color:var(--muted);font-size:12px;white-space:nowrap}.divider{height:1px;margin:28px 0 0;background:var(--line)}
     .label{margin:18px 0 5px;color:var(--muted);font-size:14px}.big{display:block;font-size:clamp(36px,4.4vw,56px);letter-spacing:-.05em;line-height:1}.help{margin:10px 0 18px;color:var(--muted);font-size:13px;line-height:1.5}.status{margin-bottom:22px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:800}.ok{border:1px solid rgba(50,213,131,.28);background:rgba(50,213,131,.08);color:var(--ok)}.bad{border:1px solid rgba(249,112,102,.28);background:rgba(249,112,102,.08);color:var(--bad)}
@@ -27,11 +27,11 @@
     <div>
       <span class="eyebrow">NNAK · Licitações</span>
       <h1>Calculadora de Lance Mínimo</h1>
-      <p>Descubra até onde a NNAK pode reduzir o valor de uma proposta sem comprometer a margem desejada e veja o resultado mensal do contrato.</p>
+      <p>Os percentuais são calculados sempre sobre o valor estimado da licitação. A duração do contrato serve para distribuir receita, custos, assessoria e lucro na visão mensal.</p>
     </div>
     <div class="rules">
-      <div><span>Assessoria fixa</span><strong>7%</strong></div>
-      <div><span>Lucro configurado</span><strong id="lucroTopo">20,00%</strong></div>
+      <div><span>Assessoria sobre o estimado</span><strong>7%</strong></div>
+      <div><span>Lucro sobre o estimado</span><strong id="lucroTopo">20,00%</strong></div>
     </div>
   </section>
 
@@ -42,22 +42,22 @@
         <label class="field">
           <span>Valor estimado da licitação</span>
           <div class="input"><input id="valorEstimado" inputmode="decimal" value="100000" /></div>
-          <small>Valor de referência ou teto informado no edital.</small>
+          <small>Base usada para calcular os 7% da assessoria e o lucro desejado.</small>
         </label>
         <label class="field">
           <span>Duração do contrato</span>
           <div class="input"><input id="mesesContrato" inputmode="decimal" value="12" /><strong>meses</strong></div>
-          <small>Todos os valores mensais são calculados a partir deste prazo.</small>
+          <small>Usado para ratear todos os valores totais na visão mensal.</small>
         </label>
         <label class="field">
           <span>Lucro mínimo desejado</span>
           <div class="input"><input id="lucroMinimo" inputmode="decimal" value="20" /><strong>%</strong></div>
-          <small>Editável. Deve ser menor que 93%, pois 7% ficam reservados à assessoria.</small>
+          <small>Percentual calculado sobre o valor estimado da licitação.</small>
         </label>
         <label class="field">
           <span>Manutenção mensal</span>
           <div class="input"><input id="manutencaoMensal" inputmode="decimal" value="800" /></div>
-          <small>Editável. O valor inicial considerado é R$ 800/mês.</small>
+          <small>Custo mensal multiplicado pela duração do contrato.</small>
         </label>
       </div>
 
@@ -65,11 +65,11 @@
 
       <div class="head compact"><span class="step">02</span><h2>Custos da execução</h2></div>
       <div class="form">
-        <label class="field"><span>Custo operacional</span><div class="input"><input id="custoOperacional" inputmode="decimal" value="0" /></div></label>
-        <label class="field"><span>Materiais / fornecedores</span><div class="input"><input id="materiais" inputmode="decimal" value="0" /></div></label>
-        <label class="field"><span>Mão de obra</span><div class="input"><input id="maoDeObra" inputmode="decimal" value="0" /></div></label>
-        <label class="field"><span>Impostos</span><div class="input"><input id="impostos" inputmode="decimal" value="0" /></div></label>
-        <label class="field"><span>Outros custos</span><div class="input"><input id="outrosCustos" inputmode="decimal" value="0" /></div></label>
+        <label class="field"><span>Custo operacional total</span><div class="input"><input id="custoOperacional" inputmode="decimal" value="0" /></div><small>Custo total previsto para todo o contrato.</small></label>
+        <label class="field"><span>Materiais / fornecedores total</span><div class="input"><input id="materiais" inputmode="decimal" value="0" /></div><small>Custo total previsto para todo o contrato.</small></label>
+        <label class="field"><span>Mão de obra total</span><div class="input"><input id="maoDeObra" inputmode="decimal" value="0" /></div><small>Custo total previsto para todo o contrato.</small></label>
+        <label class="field"><span>Impostos total</span><div class="input"><input id="impostos" inputmode="decimal" value="0" /></div><small>Valor total previsto para todo o contrato.</small></label>
+        <label class="field"><span>Outros custos total</span><div class="input"><input id="outrosCustos" inputmode="decimal" value="0" /></div><small>Outros custos totais do projeto.</small></label>
       </div>
     </div>
 
@@ -77,8 +77,8 @@
       <span class="eyebrow">Resultado</span>
       <p class="label">Lance mínimo recomendado</p>
       <strong class="big" id="lanceMinimo">R$ 0,00</strong>
-      <p class="help" id="ajudaResultado">Abaixo deste valor, a margem líquida ficará inferior a 20,00%.</p>
-      <div id="status" class="status ok">O lance mínimo cabe no valor estimado.</div>
+      <p class="help" id="ajudaResultado"></p>
+      <div id="status" class="status ok"></div>
 
       <div class="monthly-title">
         <span class="eyebrow">Visão mensal</span>
@@ -86,30 +86,32 @@
       </div>
 
       <div class="monthly-grid">
-        <div class="monthly-card"><span>Receita média/mês</span><strong id="receitaMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Valor estimado/mês</span><strong id="estimadoMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Lance mínimo/mês</span><strong id="lanceMensal">R$ 0,00</strong></div>
         <div class="monthly-card"><span>Despesas médias/mês</span><strong id="despesasMensais">R$ 0,00</strong></div>
-        <div class="monthly-card"><span>Lucro médio/mês</span><strong id="lucroMensal">R$ 0,00</strong></div>
-        <div class="monthly-card"><span>Assessoria rateada/mês</span><strong id="assessoriaMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Lucro desejado/mês</span><strong id="lucroMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Assessoria/mês</span><strong id="assessoriaMensal">R$ 0,00</strong></div>
+        <div class="monthly-card"><span>Execução/mês</span><strong id="execucaoMensal">R$ 0,00</strong></div>
       </div>
 
       <div class="metrics">
-        <div><span>Custos totais da execução</span><strong id="custosTotais">R$ 0,00</strong></div>
-        <div><span>Assessoria jurídica (7%)</span><strong id="assessoria">R$ 0,00</strong></div>
-        <div><span>Despesas totais + assessoria</span><strong id="despesasTotais">R$ 0,00</strong></div>
-        <div><span>Lucro líquido total</span><strong id="lucroTotal">R$ 0,00</strong></div>
-        <div><span>Margem líquida efetiva</span><strong id="margem">0,00%</strong></div>
+        <div><span>Valor estimado total</span><strong id="estimadoTotal">R$ 0,00</strong></div>
+        <div><span>Assessoria (7% do estimado)</span><strong id="assessoriaTotal">R$ 0,00</strong></div>
+        <div><span id="lucroLabel">Lucro desejado</span><strong id="lucroTotal">R$ 0,00</strong></div>
+        <div><span>Custos totais da execução</span><strong id="custosTotal">R$ 0,00</strong></div>
         <div><span>Manutenção total do contrato</span><strong id="manutencaoTotal">R$ 0,00</strong></div>
+        <div><span>Margem efetiva sobre o lance mínimo</span><strong id="margemEfetiva">0,00%</strong></div>
       </div>
 
       <div class="limit" id="limitBox">
-        <span>Possível redução sobre o valor estimado</span>
-        <strong id="reducao">R$ 0,00</strong>
-        <small id="reducaoPct">0,00% de margem para disputa até atingir o limite mínimo.</small>
+        <span id="limitLabel">Quanto ainda pode baixar do valor estimado</span>
+        <strong id="limitValor">R$ 0,00</strong>
+        <small id="limitHelp"></small>
       </div>
 
       <div class="formula">
         <span>Fórmula usada</span>
-        <code id="formulaTexto">custos ÷ (1 − 7% − 20,00%)</code>
+        <code id="formulaTexto"></code>
       </div>
     </aside>
   </section>
@@ -126,60 +128,74 @@ const num=v=>{
 
 function calc(){
   const v=id=>num(document.getElementById(id).value);
-  const meses=Math.max(1,v("mesesContrato"));
-  const margemAlvo=v("lucroMinimo");
-  const custosFixos=v("custoOperacional")+v("materiais")+v("maoDeObra")+v("impostos")+v("outrosCustos");
-  const manut=v("manutencaoMensal")*meses;
-  const custos=custosFixos+manut;
-  const fator=1-0.07-(margemAlvo/100);
-  const margemValida=fator>0;
-  const lance=margemValida&&custos>0?custos/fator:0;
-  const assess=lance*0.07;
-  const lucro=lance-assess-custos;
-  const margem=lance>0?(lucro/lance)*100:0;
-
-  const receitaMensal=lance/meses;
-  const assessoriaMensal=assess/meses;
-  const despesasMensais=(custos/meses)+assessoriaMensal;
-  const lucroMensal=lucro/meses;
 
   const estimado=v("valorEstimado");
-  const diff=estimado-lance;
-  const diffPct=estimado>0?(diff/estimado)*100:0;
-  const cabe=margemValida&&(estimado===0||lance<=estimado);
+  const meses=Math.max(1,v("mesesContrato"));
+  const lucroPercentual=Math.max(0,v("lucroMinimo"));
 
-  document.getElementById("lucroTopo").textContent=pct(margemAlvo);
-  document.getElementById("lanceMinimo").textContent=margemValida?brl.format(lance):"Margem inválida";
-  document.getElementById("ajudaResultado").textContent=margemValida
-    ?"Abaixo deste valor, a margem líquida ficará inferior a "+pct(margemAlvo)+"."
-    :"A soma de assessoria e lucro precisa ser inferior a 100%.";
+  const custosFixos=
+    v("custoOperacional")+
+    v("materiais")+
+    v("maoDeObra")+
+    v("impostos")+
+    v("outrosCustos");
+
+  const manutencaoTotal=v("manutencaoMensal")*meses;
+  const custosExecucao=custosFixos+manutencaoTotal;
+
+  const assessoriaTotal=estimado*0.07;
+  const lucroDesejadoTotal=estimado*(lucroPercentual/100);
+
+  const lanceMinimo=custosExecucao+assessoriaTotal+lucroDesejadoTotal;
+  const desconto=estimado-lanceMinimo;
+  const descontoPct=estimado>0?(desconto/estimado)*100:0;
+  const margemEfetiva=lanceMinimo>0?(lucroDesejadoTotal/lanceMinimo)*100:0;
+  const viavel=estimado>0&&lanceMinimo<=estimado;
+
+  const estimadoMensal=estimado/meses;
+  const lanceMensal=lanceMinimo/meses;
+  const execucaoMensal=custosExecucao/meses;
+  const assessoriaMensal=assessoriaTotal/meses;
+  const lucroMensal=lucroDesejadoTotal/meses;
+  const despesasMensais=(custosExecucao+assessoriaTotal)/meses;
+
+  document.getElementById("lucroTopo").textContent=pct(lucroPercentual);
+  document.getElementById("lanceMinimo").textContent=brl.format(lanceMinimo);
+  document.getElementById("ajudaResultado").textContent=
+    "Inclui custos de execução + 7% do valor estimado para assessoria + "+pct(lucroPercentual)+" do valor estimado como lucro.";
   document.getElementById("mesesResumo").textContent=meses+" mês(es) de contrato";
 
-  document.getElementById("receitaMensal").textContent=brl.format(receitaMensal);
+  document.getElementById("estimadoMensal").textContent=brl.format(estimadoMensal);
+  document.getElementById("lanceMensal").textContent=brl.format(lanceMensal);
   document.getElementById("despesasMensais").textContent=brl.format(despesasMensais);
   document.getElementById("lucroMensal").textContent=brl.format(lucroMensal);
   document.getElementById("assessoriaMensal").textContent=brl.format(assessoriaMensal);
+  document.getElementById("execucaoMensal").textContent=brl.format(execucaoMensal);
 
-  document.getElementById("custosTotais").textContent=brl.format(custos);
-  document.getElementById("assessoria").textContent=brl.format(assess);
-  document.getElementById("despesasTotais").textContent=brl.format(custos+assess);
-  document.getElementById("lucroTotal").textContent=brl.format(lucro);
-  document.getElementById("margem").textContent=pct(margem);
-  document.getElementById("manutencaoTotal").textContent=brl.format(manut);
-
-  document.getElementById("reducao").textContent=brl.format(Math.max(0,diff));
-  document.getElementById("reducaoPct").textContent=Math.max(0,diffPct).toFixed(2).replace(".",",")+"% de margem para disputa até atingir o limite mínimo.";
-  document.getElementById("limitBox").style.display=(estimado>0&&margemValida)?"block":"none";
-  document.getElementById("formulaTexto").textContent="custos ÷ (1 − 7% − "+pct(margemAlvo)+")";
+  document.getElementById("estimadoTotal").textContent=brl.format(estimado);
+  document.getElementById("assessoriaTotal").textContent=brl.format(assessoriaTotal);
+  document.getElementById("lucroLabel").textContent="Lucro desejado ("+pct(lucroPercentual)+" do estimado)";
+  document.getElementById("lucroTotal").textContent=brl.format(lucroDesejadoTotal);
+  document.getElementById("custosTotal").textContent=brl.format(custosExecucao);
+  document.getElementById("manutencaoTotal").textContent=brl.format(manutencaoTotal);
+  document.getElementById("margemEfetiva").textContent=pct(margemEfetiva);
 
   const s=document.getElementById("status");
-  if(!margemValida){
-    s.className="status bad";
-    s.textContent="Reduza o lucro desejado para menos de 93%.";
-  }else{
-    s.className="status "+(cabe?"ok":"bad");
-    s.textContent=cabe?"O lance mínimo cabe no valor estimado.":"Os custos exigem um lance acima do valor estimado.";
-  }
+  s.className="status "+(viavel?"ok":"bad");
+  s.textContent=viavel
+    ?"O lance mínimo cabe dentro do valor estimado."
+    :"Com estes custos e lucro, o lance mínimo supera o valor estimado.";
+
+  document.getElementById("limitLabel").textContent=desconto>=0
+    ?"Quanto ainda pode baixar do valor estimado"
+    :"Quanto falta para o projeto caber no valor estimado";
+  document.getElementById("limitValor").textContent=brl.format(Math.abs(desconto));
+  document.getElementById("limitHelp").textContent=desconto>=0
+    ?Math.max(0,descontoPct).toFixed(2).replace(".",",")+"% de espaço para disputa."
+    :"É necessário reduzir custos e/ou o lucro desejado.";
+
+  document.getElementById("formulaTexto").textContent=
+    "lance mínimo = custos + (estimado × 7%) + (estimado × "+pct(lucroPercentual)+")";
 }
 
 ids.forEach(id=>document.getElementById(id).addEventListener("input",calc));

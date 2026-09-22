@@ -1,59 +1,40 @@
 # NNAK Calculadora de Licitações
 
-Aplicação interna da NNAK para calcular o menor valor de lance possível em uma licitação preservando a margem mínima definida pela empresa.
+Aplicação interna da NNAK para calcular o menor lance possível preservando os custos, a assessoria jurídica e o lucro desejado.
 
-## Regras
+## Regra correta de cálculo
 
-- Assessoria jurídica: **7% fixos sobre o valor total do lance**
-- Lucro líquido mínimo: **editável**, iniciando em 20%
-- Manutenção mensal: **editável**, iniciando em R$ 800
-- Prazo do contrato: editável
-- Custos operacionais, materiais, mão de obra, impostos e outros custos: editáveis
-- Visão mensal de receita, despesas, assessoria e lucro
+O **valor estimado da licitação é sempre a base dos percentuais**.
 
-## Fórmula principal
+- Assessoria jurídica: **7% do valor estimado da licitação**
+- Lucro desejado: percentual editável calculado **sobre o valor estimado da licitação**
+- Manutenção: valor mensal × quantidade de meses do contrato
+- Demais custos: valores totais do contrato
 
-Como a assessoria e a margem de lucro são percentuais do próprio lance:
+### Lance mínimo
 
 ```
-lance mínimo = custos totais / (1 - 0,07 - margem_de_lucro)
+assessoria = valor estimado × 7%
+lucro desejado = valor estimado × percentual de lucro
+custos de execução = custos totais + (manutenção mensal × meses)
+
+lance mínimo = custos de execução + assessoria + lucro desejado
 ```
 
-Exemplo com margem de 20%:
+### Visão mensal
+
+Depois de calcular os valores totais, o sistema distribui tudo pela duração do contrato:
 
 ```
-lance mínimo = custos totais / 0,73
-```
-
-## Visão mensal
-
-A projeção mensal distribui o valor total do contrato pelo número de meses informado:
-
-```
-receita mensal = lance mínimo / meses
-despesas mensais = (custos totais + assessoria) / meses
-lucro mensal = lucro líquido total / meses
+valor estimado mensal = valor estimado / meses
+lance mínimo mensal = lance mínimo / meses
+assessoria mensal = assessoria / meses
+lucro mensal = lucro desejado / meses
+despesas mensais = (custos de execução + assessoria) / meses
 ```
 
 ## GitHub Pages
 
 Publicação pela branch `gh-pages`.
 
-Endereço:
-
 `https://nnak-desenvolvimento.github.io/nnak-licitacao-calculadora/`
-
-## Rodando localmente
-
-```bash
-npm install
-npm run dev
-```
-
-Acesse `http://localhost:3000`.
-
-## Stack
-
-- Next.js
-- React
-- TypeScript

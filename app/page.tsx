@@ -86,6 +86,9 @@ export default function Home() {
     const margemEfetivaNoLance =
       lanceMinimo > 0 ? (lucroDesejadoTotal / lanceMinimo) * 100 : 0;
 
+    const saldoMensal = lanceMinimo / meses - (custosExecucao + assessoriaTotal) / meses;
+    const saldoTotalContrato = lanceMinimo - custosExecucao - assessoriaTotal;
+
     return {
       estimado,
       meses,
@@ -107,6 +110,9 @@ export default function Home() {
       assessoriaMensal: assessoriaTotal / meses,
       lucroMensal: lucroDesejadoTotal / meses,
       despesasMensais: (custosExecucao + assessoriaTotal) / meses,
+      saldoMensal,
+      saldoTotalContrato,
+      mesPositivo: saldoMensal >= 0,
     };
   }, [
     valorEstimado,
@@ -245,6 +251,21 @@ export default function Home() {
               : "Com estes custos e lucro, o lance mínimo supera o valor estimado."}
           </div>
 
+          <div
+            className={`monthlyResult ${resultado.mesPositivo ? "positive" : "negative"}`}
+          >
+            <div>
+              <span className="monthlyResultLabel">Resultado líquido do mês</span>
+              <strong>{moeda.format(resultado.saldoMensal)}</strong>
+              <small>
+                Lance mensal − custos mensais − assessoria mensal
+              </small>
+            </div>
+            <span className="monthlyBadge">
+              {resultado.mesPositivo ? "POSITIVO" : "NEGATIVO"}
+            </span>
+          </div>
+
           <div className="monthlyTitle">
             <span className="eyebrow">Visão mensal</span>
             <small>{resultado.meses} mês(es) de contrato</small>
@@ -264,8 +285,8 @@ export default function Home() {
               <strong>{moeda.format(resultado.despesasMensais)}</strong>
             </div>
             <div className="monthlyCard">
-              <span>Lucro desejado/mês</span>
-              <strong>{moeda.format(resultado.lucroMensal)}</strong>
+              <span>Lucro líquido/mês</span>
+              <strong>{moeda.format(resultado.saldoMensal)}</strong>
             </div>
             <div className="monthlyCard">
               <span>Assessoria/mês</span>
@@ -299,6 +320,10 @@ export default function Home() {
             <div>
               <span>Manutenção total do contrato</span>
               <strong>{moeda.format(resultado.manutencaoTotal)}</strong>
+            </div>
+            <div>
+              <span>Lucro/prejuízo total do contrato</span>
+              <strong>{moeda.format(resultado.saldoTotalContrato)}</strong>
             </div>
             <div>
               <span>Margem efetiva sobre o lance mínimo</span>
